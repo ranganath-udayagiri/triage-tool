@@ -1,6 +1,11 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
+class Ticket(BaseModel):
+    id: int
+    customer: str
+    priority: str
 
 tickets = [
     {"id": 101, "customer": "Rangu", "priority": "HIGH PRIORITY"},
@@ -29,3 +34,8 @@ def get_ticket(ticket_id: int):
     for t in tickets:
         if t["id"] == ticket_id:
             return t
+
+@app.post("/tickets")
+def create_ticket(ticket: Ticket):
+    tickets.append(ticket.model_dump())
+    return ticket
